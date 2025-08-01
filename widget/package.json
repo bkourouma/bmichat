@@ -1,0 +1,52 @@
+{
+  "name": "bmi-chat-widget",
+  "version": "1.0.0",
+  "description": "BMI Chat Embeddable Widget - Vanilla JavaScript",
+  "type": "module",
+  "main": "dist/chat-widget.js",
+  "scripts": {
+    "dev": "vite --config vite.config.js --host 0.0.0.0 --port 3004",
+    "build": "vite build --config vite.config.js",
+    "preview": "vite preview --config vite.config.js --host 0.0.0.0 --port 3004",
+    "lint": "eslint src --ext .js,.ts --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext .js,.ts --fix",
+    "format": "prettier --write \"src/**/*.{js,ts,css,html}\"",
+    "format:check": "prettier --check \"src/**/*.{js,ts,css,html}\"",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "serve": "http-server dist -p 3004 -c-1"
+  },
+  "dependencies": {
+    "marked": "^9.1.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "typescript": "^5.2.0",
+    "eslint": "^8.53.0",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "prettier": "^3.0.0",
+    "vitest": "^0.34.0",
+    "@vitest/coverage-v8": "^0.34.0",
+    "jsdom": "^22.1.0",
+    "http-server": "^14.1.0",
+    "terser": "^5.24.0"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "chatbot",
+    "widget",
+    "embeddable",
+    "javascript",
+    "chat",
+    "ai"
+  ],
+  "author": "BMI Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

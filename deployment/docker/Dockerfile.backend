@@ -1,0 +1,43 @@
+# BMI Chat Backend Dockerfile
+# Simplified single-stage build for better reliability
+
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Create non-root user first
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Set work directory
+WORKDIR /app
+
+# Copy requirements file (we'll create this)
+COPY deployment/docker/requirements.txt ./
+
+# Install Python dependencies
+RUN pip install -r requirements.txt
+
+# Copy application code
+COPY app/ ./app/
+COPY pyproject.toml ./
+
+# Create necessary directories and set permissions
+RUN mkdir -p data/sqlite data/uploads data/vectors logs && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Health check (using python instead of curl to avoid network dependencies)
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:3006/health')" || exit 1
+
+# Expose port
+EXPOSE 3006
+
+# Run the application
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3006"]

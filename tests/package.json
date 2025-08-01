@@ -1,0 +1,28 @@
+{
+  "name": "bmi-chat-tests",
+  "version": "1.0.0",
+  "description": "BMI Chat E2E and Integration Tests",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:integration": "vitest run integration/",
+    "test:all": "npm run test:integration && npm run test:e2e",
+    "install:browsers": "playwright install",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "vitest": "^0.34.0",
+    "@vitest/coverage-v8": "^0.34.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

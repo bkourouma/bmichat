@@ -1,0 +1,63 @@
+version: '3.8'
+
+# Development Docker Compose Configuration
+# This extends the main docker-compose.yml with development-specific settings
+
+services:
+  # Backend with development settings
+  backend:
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - API_WORKERS=1
+    volumes:
+      # Mount source code for development (optional - for hot reload)
+      - ../../app:/app/app:ro
+    ports:
+      - "3006:3006"
+      # Expose additional port for debugging
+      - "5678:5678"
+
+  # Frontend with development settings
+  frontend:
+    # Override build to use development mode
+    build:
+      context: ../../
+      dockerfile: deployment/docker/Dockerfile.frontend
+      target: builder
+    command: npm run dev
+    volumes:
+      # Mount source code for hot reload
+      - ../../frontend/src:/app/src:ro
+      - ../../frontend/public:/app/public:ro
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3003:3003"
+
+  # Development database viewer (optional)
+  adminer:
+    image: adminer
+    container_name: bmi-chat-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - bmi-chat-network
+    profiles:
+      - dev-tools
+
+  # Development log viewer (optional)
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: bmi-chat-logs
+    restart: unless-stopped
+    ports:
+      - "9999:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - bmi-chat-network
+    profiles:
+      - dev-tools
