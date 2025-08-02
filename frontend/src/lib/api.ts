@@ -18,7 +18,7 @@ import type {
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3006',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   timeout: 30000, // 30 seconds
   headers: {
     'Content-Type': 'application/json',
@@ -85,24 +85,24 @@ api.interceptors.response.use(
 // Chat API
 export const chatApi = {
   sendMessage: async (request: ChatRequest): Promise<ChatResponse> => {
-    const response = await api.post<ChatResponse>('/api/chat', request)
+    const response = await api.post<ChatResponse>('/chat', request)
     return response.data
   },
 
   getHistory: async (sessionId: string, limit = 50): Promise<any[]> => {
-    const response = await api.get(`/api/chat/sessions/${sessionId}/history`, {
+    const response = await api.get(`/chat/sessions/${sessionId}/history`, {
       params: { limit }
     })
     return response.data
   },
 
   getSessionSummary: async (sessionId: string): Promise<ChatSession> => {
-    const response = await api.get<ChatSession>(`/api/chat/sessions/${sessionId}/summary`)
+    const response = await api.get<ChatSession>(`/chat/sessions/${sessionId}/summary`)
     return response.data
   },
 
   clearSession: async (sessionId: string): Promise<void> => {
-    await api.delete(`/api/chat/sessions/${sessionId}`)
+    await api.delete(`/chat/sessions/${sessionId}`)
   },
 }
 
@@ -115,7 +115,7 @@ export const documentsApi = {
       formData.append('keywords', keywords)
     }
 
-    const response = await api.post<Document>('/api/documents/upload', formData, {
+    const response = await api.post<Document>('/documents/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -125,31 +125,31 @@ export const documentsApi = {
   },
 
   list: async (skip = 0, limit = 100): Promise<DocumentListResponse> => {
-    const response = await api.get<DocumentListResponse>('/api/documents', {
+    const response = await api.get<DocumentListResponse>('/documents', {
       params: { skip, limit }
     })
     return response.data
   },
 
   get: async (documentId: string): Promise<Document> => {
-    const response = await api.get<Document>(`/api/documents/${documentId}`)
+    const response = await api.get<Document>(`/documents/${documentId}`)
     return response.data
   },
 
   delete: async (documentId: string): Promise<void> => {
-    await api.delete(`/api/documents/${documentId}`)
+    await api.delete(`/documents/${documentId}`)
   },
 }
 
 // Search API
 export const searchApi = {
   semantic: async (request: SearchRequest): Promise<SearchResponse> => {
-    const response = await api.post<SearchResponse>('/api/search/semantic', request)
+    const response = await api.post<SearchResponse>('/search/semantic', request)
     return response.data
   },
 
   keywords: async (keywords: string[], k = 10, chunkType?: string): Promise<SearchResponse> => {
-    const response = await api.post<SearchResponse>('/api/search/keywords', null, {
+    const response = await api.post<SearchResponse>('/search/keywords', null, {
       params: { keywords: keywords.join(','), k, chunk_type: chunkType }
     })
     return response.data
@@ -162,19 +162,19 @@ export const searchApi = {
     semantic_weight?: number
     keyword_weight?: number
   }): Promise<SearchResponse> => {
-    const response = await api.post<SearchResponse>('/api/search/hybrid', request)
+    const response = await api.post<SearchResponse>('/search/hybrid', request)
     return response.data
   },
 
   getAnalytics: async (days = 30): Promise<AnalyticsData> => {
-    const response = await api.get<AnalyticsData>('/api/search/analytics', {
+    const response = await api.get<AnalyticsData>('/search/analytics', {
       params: { days }
     })
     return response.data
   },
 
   getStats: async (): Promise<any> => {
-    const response = await api.get('/api/search/stats')
+    const response = await api.get('/search/stats')
     return response.data
   },
 }
